@@ -22,11 +22,11 @@ const db = new Sequelize(
 ); 
 
 try {
-  await sequelize.authenticate();
+  await Sequelize.authenticate();
   console.log('Conexión a MySQL con Sequelize exitosa.');
 } catch (error) {
   console.error('No se pudo conectar a la base de datos:', error);
 }
 
-export default sequelize;
+export default Sequelize;
 
