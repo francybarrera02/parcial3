@@ -1,13 +1,13 @@
-import Sequelize from 'sequelize';
+import { Sequelize } from 'sequelize';
 
 const db = new Sequelize(
-  'b7pcxohuphbteiurtvrw', // base de datos
-  'utgyt47g2pq7cqtf',     // usuario
-  'DDUEMFOMTzlbTspvwXwO', // contraseña
+  'b7pcxohuphbteiurtvrw', // Nombre de la base de datos
+  'utgyt47g2pq7cqtf',     // Usuario
+  'DDUEMFOMTzIbTspvvXwO', // Contraseña
   {
-    host: 'b7pcxohuphbteiurtvrw-mysql.services.clever-cloud.com-mysql.services.clever-cloud.com',
+    host: 'b7pcxohuphbteiurtvrw-mysql.services.clever-cloud.com',
     dialect: 'mysql',
-    port: process.env.DB_PORT || 3306, // agregar explícitamente el puerto si es necesario
+    port: 3306, // Puerto estándar
     define: {
       timestamps: false
     },
@@ -17,16 +17,21 @@ const db = new Sequelize(
       acquire: 30000,
       idle: 10000
     },
-    operatorsAliases: false
+    dialectOptions: {
+      ssl: {
+        require: false
+      }
+    },
+    logging: false // Opcional: desactiva logs en consola
   }
-); 
+);
 
+// Autenticación
 try {
-  await Sequelize.authenticate();
+  await db.authenticate();
   console.log('Conexión a MySQL con Sequelize exitosa.');
 } catch (error) {
-  console.error('No se pudo conectar a la base de datos:', error);
+  console.error(' No se pudo conectar a la base de datos:', error);
 }
 
 export default db;
-
