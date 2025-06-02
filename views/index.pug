@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  .inicio-banner
+    .overlay
+      header
+        img.logo(src='/img/logo.png', alt='Logo Beauty Smile')
+        nav.nav
+          ul
+            li: a(href='/') Inicio
+            li: a(href='/pacientes') Pacientes
+            li: a(href='/citas') Citas
+            li: a(href='/servicios') Servicios
+            li: a(href='/contacto') Contacto
+            h1 Bienvenido a Beauty Smile
+            p Has iniciado sesión correctamente.
+         a(href="/logout") Cerrar sesión
+
+      .mensaje-central
+        h1 MÁS DE 1 MILLÓN DE PACIENTES
+        h2 han completado con éxito sus tratamientos en
+        h2(style='color: #ffffff') Beauty Smile
+
+  p.vigilado *Vigilado Supersalud

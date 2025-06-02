@@ -1,0 +1,241 @@
+extends layout
+
+block content
+  .citas-container
+    h1.text-center Lista de Citas
+
+    form(method='GET', action='/citas', style='margin-bottom: 20px; text-align: right;')
+      input(
+        type='text',
+        name='search',
+        placeholder='Buscar por nombre de paciente...',
+        value= search || '',
+        style='padding: 8px 12px; border: 1px solid #ccc; border-radius: 4px; width: 220px;'
+      )
+      button(
+        type='submit',
+        style='margin-left: 8px; padding: 8px 12px; background: #6c9eff; color: white; border: none; border-radius: 4px; cursor: pointer;'
+      ) 🔍
+      if search
+        a(
+          href='/citas',
+          style='margin-left: 10px; color: #dc3545; font-weight: bold; text-decoration: none;'
+        ) Limpiar
+
+    if citas.length
+      table.citas-table
+        thead
+          tr
+            th(style='background-color: #6c9eff; color: white; padding: 12px 15px; text-align: left;') Paciente
+            th(style='background-color: #6c9eff; color: white; padding: 12px 15px; text-align: left;') Servicio
+            th(style='background-color: #6c9eff; color: white; padding: 12px 15px; text-align: left;') Médico
+            th(style='background-color: #6c9eff; color: white; padding: 12px 15px; text-align: left;') Fecha
+            th(style='background-color: #6c9eff; color: white; padding: 12px 15px; text-align: left;') Estado
+            th(style='background-color: #6c9eff; color: white; padding: 12px 15px; text-align: left;') Observaciones
+            th(style='background-color: #6c9eff; color: white; padding: 12px 15px; text-align: left;') Acciones
+        tbody
+          each cita in citas
+            - var nombrePaciente = cita.paciente ? cita.paciente.nombre : 'Sin paciente'
+            - var nombreServicio = cita.servicio ? cita.servicio.nombre : 'Sin servicio'
+            - var nombreMedico   = cita.medico  ? cita.medico.nombre  : 'Sin médico'
+            tr
+              td(style='padding: 12px 15px;')= nombrePaciente
+              td(style='padding: 12px 15px;')= nombreServicio
+              td(style='padding: 12px 15px;')= nombreMedico
+              td(style='padding: 12px 15px;')= cita.fecha.toLocaleString()
+              td(style='padding: 12px 15px;')= cita.estado
+              td(style='padding: 12px 15px;')= cita.observaciones || 'Sin observaciones'
+              td(style='padding: 12px 15px;')
+                if cita.estado === 'pendiente'
+                  a(
+                    href=`/citas/atender/${cita.id}`,
+                    title='Atender',
+                    style='margin-right: 12px; text-decoration: none; font-size: 18px; color: #28a745;'
+                  ) 🩺
+                  a(
+                    href=`/citas/cancelar/${cita.id}`,
+                    title='Cancelar',
+                    style='margin-right: 12px; text-decoration: none; font-size: 18px; color: #dc3545;',
+                    onclick="return confirm('¿Seguro que deseas cancelar esta cita?')"
+                  ) 🗑️
+                  a(
+                    href=`/citas?search=${search || ''}&page=${currentPage || 1}&edit=${cita.id}`,
+                    title='Editar',
+                    style='text-decoration: none; font-size: 18px; color: #007bff;'
+                  ) ✏️
+                else if cita.estado === 'en consulta'
+                  a(
+                    href=`/citas/finalizar/${cita.id}`,
+                    title='Finalizar',
+                    style='margin-right: 12px; text-decoration: none; font-size: 18px; color: #1e90ff;'
+                  ) ✅
+                else
+                  span.text-muted Sin acciones
+    else
+      p.text-center.text-muted No hay citas registradas.
+
+    if citas.length && totalPages > 1
+      .pagination
+        if currentPage > 1
+          a(
+            href=`/citas?search=${search || ''}&page=${currentPage - 1}`,
+            style='padding: 6px 12px; margin: 0 4px; background-color: #e8f0fe; border-radius: 8px; color: #004080; text-decoration: none;'
+          ) « Anterior
+        else
+          span(
+            style='padding: 6px 12px; margin: 0 4px; background-color: #f0f0f0; color: #999; border-radius: 8px; cursor: default;'
+          ) « Anterior
+
+        - for (let num = 1; num <= totalPages; num++)
+          if num === currentPage
+            span(
+              style='padding: 6px 12px; margin: 0 4px; background-color: #6c9eff; color: white; border-radius: 8px;'
+            )= num
+          else
+            a(
+              href=`/citas?search=${search || ''}&page=${num}`,
+              style='padding: 6px 12px; margin: 0 4px; background-color: #e8f0fe; border-radius: 8px; color: #004080; text-decoration: none;'
+            )= num
+
+        if currentPage < totalPages
+          a(
+            href=`/citas?search=${search || ''}&page=${currentPage + 1}`,
+            style='padding: 6px 12px; margin: 0 4px; background-color: #e8f0fe; border-radius: 8px; color: #004080; text-decoration: none;'
+          ) Siguiente »
+        else
+          span(
+            style='padding: 6px 12px; margin: 0 4px; background-color: #f0f0f0; color: #999; border-radius: 8px; cursor: default;'
+          ) Siguiente »
+
+    if citaEdit
+      h2.text-center.mt-5 Editar Cita
+
+      form.formulario-cita(
+        action=`/citas/actualizar/${citaEdit.id}`,
+        method='POST',
+        style='margin-top: 20px;'
+      )
+        .form-group
+          label(for='paciente_id') Paciente:
+          select(name='paciente_id', required)
+            each paciente in pacientes
+              if paciente.id === citaEdit.paciente_id
+                option(value=paciente.id, selected)= paciente.nombre
+              else
+                option(value=paciente.id)= paciente.nombre
+
+        .form-group
+          label(for='servicio_id') Servicio:
+          select(name='servicio_id', required)
+            each servicio in servicios
+              if servicio.id === citaEdit.servicio_id
+                option(value=servicio.id, selected)= servicio.nombre
+              else
+                option(value=servicio.id)= servicio.nombre
+
+        .form-group
+          label(for='fecha') Fecha y hora:
+          - var fechaISO = citaEdit.fecha.toISOString().slice(0,16)
+          input(type='datetime-local', name='fecha', required, value= fechaISO)
+
+        .form-group
+          label(for='estado') Estado:
+          select(name='estado', required)
+            option(value='pendiente', selected=(citaEdit.estado === 'pendiente')) Pendiente
+            option(value='en consulta', selected=(citaEdit.estado === 'en consulta')) En consulta
+            option(value='finalizada', selected=(citaEdit.estado === 'finalizada')) Finalizada
+
+        .form-group
+          label(for='medico_id') Médico:
+          select(name='medico_id')
+            option(value='') — Sin médico —
+            each medico in medicos
+              if citaEdit.medico_id === medico.id
+                option(value=medico.id, selected)= medico.nombre
+              else
+                option(value=medico.id)= medico.nombre
+
+        .form-group
+          label(for='observaciones') Observaciones:
+          textarea(
+            name='observaciones',
+            rows='4',
+            placeholder='Observaciones adicionales',
+            style='width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;'
+          )= citaEdit.observaciones || ''
+
+        button(
+          type='submit',
+          style='background-color: #6c9eff; color: white; padding: 10px 0; width: 80%; border: none; border-radius: 8px; margin-top: 15px; font-size: 16px; font-weight: bold; cursor: pointer; display: block; margin-left: auto; margin-right: auto;'
+        ) Actualizar Cita
+
+        .text-center.mt-3
+          a(
+            href=`/citas?search=${search || ''}&page=${currentPage || 1}`,
+            style='color: #dc3545; font-size: 14px; text-decoration: none;'
+          ) ← Cancelar edición
+
+      .text-center.mt-4
+        p.text-muted Aquí puedes modificar los datos de la cita seleccionada.
+
+    else
+      h2.text-center.mt-5 Registrar Nueva Cita
+
+      form.formulario-cita(
+        action='/citas/registrar',
+        method='POST',
+        style='margin-top: 20px;'
+      )
+        .form-group
+          label(for='paciente_id') Paciente:
+          select(name='paciente_id', required, style='width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;')
+            option(value='') — Selecciona paciente —
+            each paciente in pacientes
+              option(value=paciente.id)= paciente.nombre
+
+        .form-group
+          label(for='servicio_id') Servicio:
+          select(name='servicio_id', required, style='width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;')
+            option(value='') — Selecciona servicio —
+            each servicio in servicios
+              option(value=servicio.id)= servicio.nombre
+
+        .form-group
+          label(for='fecha') Fecha y hora:
+          input(
+            type='datetime-local',
+            name='fecha',
+            required,
+            style='width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;'
+          )
+
+        .form-group
+          label(for='estado') Estado:
+          select(name='estado', required, style='width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;')
+            option(value='pendiente') Pendiente
+            option(value='en consulta') En consulta
+            option(value='finalizada') Finalizada
+
+        .form-group
+          label(for='medico_id') Médico:
+          select(name='medico_id', style='width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;')
+            option(value='') — Sin médico —
+            each medico in medicos
+              option(value=medico.id)= medico.nombre
+
+        .form-group
+          label(for='observaciones') Observaciones:
+          textarea(
+            name='observaciones',
+            rows='4',
+            placeholder='Observaciones adicionales',
+            style='width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;'
+          )
+
+        button(
+          type='submit',
+          style='background-color: #6c9eff; color: white; padding: 10px 0; width: 80%; border: none; border-radius: 8px; margin-top: 15px; font-size: 16px; font-weight: bold; cursor: pointer; display: block; margin-left: auto; margin-right: auto;'
+        ) Registrar Cita
+
+      .text-center.mt-4
+        p.text-muted Completa el formulario para añadir una nueva cita.

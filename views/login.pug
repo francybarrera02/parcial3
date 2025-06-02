@@ -1,0 +1,15 @@
+doctype html
+html
+  head
+    title Beauty Smile - Login
+    link(rel='stylesheet', href='/css/style.css')
+  body.login-bg
+    .login-box
+      h1 Beauty Smile
+      h2 Iniciar sesión
+      if error
+        p.error= error
+      form(action="/login", method="POST")
+        input(type="text", name="usuario", placeholder="Usuario", required)
+        input(type="password", name="clave", placeholder="Contraseña", required)
+        button(type="submit") Ingresar

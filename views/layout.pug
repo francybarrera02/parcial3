@@ -1,0 +1,41 @@
+doctype html
+html
+  head
+    title Beauty Smile
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    link(rel='stylesheet', href='/css/style.css')
+    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css')
+    script(src='https://kit.fontawesome.com/a2e5b6cfd6.js', crossorigin='anonymous')
+  body(class=bodyClass)
+
+    // Solo si hay sesión activa, mostramos el menú
+    if usuario
+      input#menu-toggle(type='checkbox')
+      label.menu-icon(for='menu-toggle')
+        i.fas.fa-bars
+
+      aside.sidebar
+        ul
+          li
+            i.fas.fa-home
+            a(href='/inicio') Inicio
+          li
+            i.fas.fa-user
+            a(href='/pacientes') Pacientes
+          li
+            i.fas.fa-calendar
+            a(href='/citas') Citas
+          li
+            i.fas.fa-tooth
+            a(href='/servicios') Servicios
+          li
+            i.fas.fa-user-md
+            a(href='/medicos') Médicos
+          li
+            i.fas.fa-sign-out-alt
+            a(href='/logout') Salir
+
+    // Contenedor del contenido principal
+    main.container
+      block content

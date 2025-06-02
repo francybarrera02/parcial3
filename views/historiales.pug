@@ -1,0 +1,38 @@
+extends layout
+
+block content
+  .historial-container
+    h1 Historial de #{paciente.nombre}
+
+    if historiales.length
+      table
+        thead
+          tr
+            th Fecha
+            th Detalle
+        tbody
+          each h in historiales
+            tr
+              td= h.fecha
+              td= h.detalle
+    else
+      p No hay registros en el historial.
+
+    h2 Agregar Registro
+    form(action='/historiales/agregar', method='POST')
+      input(type='hidden', name='paciente_id', value=paciente.id)
+      div
+        label(for='fecha') Fecha:
+        input(type='date', name='fecha', required)
+      div
+        label(for='detalle') Detalle:
+        textarea(name='detalle', rows='4', required)
+      button(type='submit') Agregar
+
+
+    .div.volver-container
+     a.volver-btn(href='/pacientes') Volver
+
+        
+        
+    
