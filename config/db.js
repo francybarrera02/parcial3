@@ -28,5 +28,5 @@ try {
   console.error('No se pudo conectar a la base de datos:', error);
 }
 
-export default Sequelize;
+export default db;
 
