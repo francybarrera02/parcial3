@@ -1,11 +1,13 @@
+import Sequelize from 'sequelize';
+
 const db = new Sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASS,
+  'b7pcxohuphbteiurtvrw', // base de datos
+  'utgyt47g2pq7cqtf',     // usuario
+  'DDUEMFOMTzlbTspvwXwO', // contraseña
   {
-    host: process.env.DB_HOST,
+    host: 'b7pcxohuphbteiurtvrw-mysql.services.clever-cloud.com',
     dialect: 'mysql',
-    port: process.env.DB_PORT || 3306,
+    port: process.env.DB_PORT || 3306, // agregar explícitamente el puerto si es necesario
     define: {
       timestamps: false
     },
@@ -15,6 +17,9 @@ const db = new Sequelize(
       acquire: 30000,
       idle: 10000
     },
-    logging: false
+    operatorsAliases: false
   }
 );
+
+export default db;
+
