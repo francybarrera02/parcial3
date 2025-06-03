@@ -1,25 +1,28 @@
-import Sequelize from 'sequelize';
+import { Sequelize } from 'sequelize';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const db = new Sequelize(
-  'b7pcxohuphbteiurtvrw', // base de datos
-  'utgyt47g2pq7cqtf',     // usuario
-  'DDUEMFOMTzlbTspvwXwO', // contraseña
+const sequelize = new Sequelize(
+  process.env.DB_NAME || 'beauty_smile',
+  process.env.DB_USER || 'root',
+  process.env.DB_PASS || '',
   {
-    host: 'b7pcxohuphbteiurtvrw-mysql.services.clever-cloud.com',
+    host: process.env.DB_HOST || 'localhost',
     dialect: 'mysql',
-    port: process.env.DB_PORT || 3306, // agregar explícitamente el puerto si es necesario
+    port: process.env.DB_PORT || 3306,
     define: {
       timestamps: false
     },
-    pool: {
-      max: 5,
-      min: 0,
-      acquire: 30000,
-      idle: 10000
-    },
-    operatorsAliases: false
+    logging: false
   }
 );
 
-export default db;
+try {
+  await sequelize.authenticate();
+  console.log('✅ Conexión a MySQL con Sequelize exitosa.');
+} catch (error) {
+  console.error('❌ No se pudo conectar a la base de datos:', error.message);
+}
+
+export default sequelize;
 

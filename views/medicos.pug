@@ -119,7 +119,10 @@ block content
         )
 
       //- Botón envía “Registrar” o “Actualizar” según contexto
-      button(type='submit')= medicoEdit ? 'Actualizar' : 'Registrar Médico'
+      button(
+            type='submit',
+            style='background-color: #6c9eff; color: white; padding: 10px 0; width: 80%; border: none; border-radius: 8px; margin-top: 15px; font-size: 16px; font-weight: bold; cursor: pointer; display: block; margin-left: auto; margin-right: auto;'
+        )= medicoEdit ? 'Actualizar' : 'Registrar Médico'
 
       //- Si estamos editando, botón para cancelar edición y volver a modo “Registrar”
       if medicoEdit

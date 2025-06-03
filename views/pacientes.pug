@@ -31,34 +31,29 @@ block content
       table.pacientes-table(style='width: 100%; border-collapse: collapse; margin-bottom: 30px;')
         thead
           tr
-            th(style='background-color: #6c9eff; color: white; padding: 12px 15px; text-align: left;') Nombre
-            th(style='background-color: #6c9eff; color: white; padding: 12px 15px; text-align: left;') Cédula
-            th(style='background-color: #6c9eff; color: white; padding: 12px 15px; text-align: left;') Teléfono
-            th(style='background-color: #6c9eff; color: white; padding: 12px 15px; text-align: left;') Dirección
-            th(style='background-color: #6c9eff; color: white; padding: 12px 15px; text-align: left;') Acciones
+            th Nombre
+            th Cédula
+            th Teléfono
+            th Dirección
+            th Acciones
         tbody
           each paciente, idx in pacientes
             tr(style=( idx % 2 === 0 ? 'background-color: #f9f9f9;' : '' ))
-              td(style='padding: 12px 15px;')= paciente.nombre
-              td(style='padding: 12px 15px;')= paciente.cedula
-              td(style='padding: 12px 15px;')= paciente.telefono
-              td(style='padding: 12px 15px;')= paciente.direccion
-              td(style='padding: 12px 15px;')
-                
+              td= paciente.nombre
+              td= paciente.cedula
+              td= paciente.telefono
+              td= paciente.direccion
+              td
                 a(
                   href=`/historiales/${paciente.id}`,
                   title='Ver Historial',
                   style='margin-right: 12px; color: #007bff; text-decoration: none; font-size: 18px;'
                 ) 📖
-
-               
                 a(
                   href=`/pacientes?search=${search || ''}&page=${currentPage || 1}&edit=${paciente.id}`,
                   title='Editar',
                   style='margin-right: 12px; color: #28a745; text-decoration: none; font-size: 18px;'
                 ) ✏️
-
-                
                 a(
                   href=`/pacientes/eliminar-paciente/${paciente.id}`,
                   title='Eliminar',
@@ -67,31 +62,26 @@ block content
                 ) 🗑️
 
       if totalPages > 1
-        .pagination(style='margin-top: 20px; text-align: center;')
+        .pagination
           if currentPage > 1
             a(
-              href=`/pacientes?search=${search || ''}&page=${currentPage - 1}`,
-              style='padding: 6px 12px; margin: 0 4px; background-color: #e8f0fe; border-radius: 8px; color: #004080; text-decoration: none;'
+              href=`/pacientes?search=${search || ''}&page=${currentPage - 1}`
             ) « Anterior
           else
-            span(style='padding: 6px 12px; margin: 0 4px; background-color: #f0f0f0; color: #999; border-radius: 8px; cursor: default;') « Anterior
+            span(style='color: #999;') « Anterior
 
           - for (let num = 1; num <= totalPages; num++)
             if num === currentPage
-              span(style='padding: 6px 12px; margin: 0 4px; background-color: #6c9eff; color: white; border-radius: 8px;')= num
+              span= num
             else
-              a(
-                href=`/pacientes?search=${search || ''}&page=${num}`,
-                style='padding: 6px 12px; margin: 0 4px; background-color: #e8f0fe; border-radius: 8px; color: #004080; text-decoration: none;'
-              )= num
+              a(href=`/pacientes?search=${search || ''}&page=${num}`)= num
 
           if currentPage < totalPages
             a(
-              href=`/pacientes?search=${search || ''}&page=${currentPage + 1}`,
-              style='padding: 6px 12px; margin: 0 4px; background-color: #e8f0fe; border-radius: 8px; color: #004080; text-decoration: none;'
+              href=`/pacientes?search=${search || ''}&page=${currentPage + 1}`
             ) Siguiente »
           else
-            span(style='padding: 6px 12px; margin: 0 4px; background-color: #f0f0f0; color: #999; border-radius: 8px; cursor: default;') Siguiente »
+            span(style='color: #999;') Siguiente »
 
     else
       p.text-center.text-muted No hay pacientes registrados.
@@ -99,9 +89,7 @@ block content
     if pacienteEdit
       h2.text-center.mt-5 Editar Paciente
 
-      //- “Cancelar edición” (SIEMPRE ABAJO DEL FORMULARIO)
-      //  Se deja dentro de este bloque, justo después de los campos de edición.
-      .formulario-paciente(style='margin-top: 20px;')
+      form.formulario-paciente(method='POST', action=`/pacientes/actualizar/${pacienteEdit.id}`, style='margin-top: 20px;')
         .form-group
           label(for='nombre') Nombre:
           input(
@@ -109,8 +97,7 @@ block content
             id='nombre',
             name='nombre',
             required,
-            placeholder='Nombre del paciente',
-            value= pacienteEdit.nombre
+            value=pacienteEdit.nombre
           )
         .form-group
           label(for='cedula') Cédula:
@@ -119,8 +106,7 @@ block content
             id='cedula',
             name='cedula',
             required,
-            placeholder='Cédula del paciente',
-            value= pacienteEdit.cedula
+            value=pacienteEdit.cedula
           )
         .form-group
           label(for='telefono') Teléfono:
@@ -129,8 +115,7 @@ block content
             id='telefono',
             name='telefono',
             required,
-            placeholder='Teléfono del paciente',
-            value= pacienteEdit.telefono
+            value=pacienteEdit.telefono
           )
         .form-group
           label(for='direccion') Dirección:
@@ -139,32 +124,24 @@ block content
             id='direccion',
             name='direccion',
             required,
-            placeholder='Dirección del paciente',
-            value= pacienteEdit.direccion
+            value=pacienteEdit.direccion
           )
 
-        button(
-          type='submit',
-          style='background-color: #6c9eff; color: white; padding: 10px 0; width: 80%; border: none; border-radius: 8px; margin-top: 15px; font-size: 16px; font-weight: bold; cursor: pointer; display: block; margin-left: auto; margin-right: auto;'
-        ) Actualizar Paciente
+        button(type='submit') Actualizar Paciente
 
-        //- Enlace “← Cancelar edición” justo debajo del botón
         .text-center.mt-3
           a(
             href=`/pacientes?search=${search || ''}&page=${currentPage || 1}`,
             style='color: #dc3545; font-size: 14px; text-decoration: none;'
           ) ← Cancelar edición
-        .text-center.mt-4 
 
-      //- Párrafo explicativo final, centrado
-      .text-center.mt-4
-        p.text-muted Aquí puedes modificar los datos del paciente seleccionado.
-      .text-center.mt-4
+        .text-center.mt-4
+          p.text-muted Aquí puedes modificar los datos del paciente seleccionado.
 
     else
       h2.text-center.mt-5 Registrar Paciente
 
-      .formulario-paciente(style='margin-top: 20px;')
+      form.formulario-paciente(method='POST', action='/pacientes/registrar', style='margin-top: 20px;')
         .form-group
           label(for='nombre-crear') Nombre:
           input(
@@ -207,7 +184,7 @@ block content
           style='background-color: #6c9eff; color: white; padding: 10px 0; width: 80%; border: none; border-radius: 8px; margin-top: 15px; font-size: 16px; font-weight: bold; cursor: pointer; display: block; margin-left: auto; margin-right: auto;'
         ) Registrar Paciente
 
-      //- Párrafo explicativo final, centrado
       .text-center.mt-4
         p.text-muted Completa el formulario para añadir un nuevo paciente.
+
     .text-center.mt-4
