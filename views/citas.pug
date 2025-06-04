@@ -45,23 +45,23 @@ block content
               td(style='padding: 12px 15px;')= cita.fecha.toLocaleString()
               td(style='padding: 12px 15px;')= cita.estado
               td(style='padding: 12px 15px;')= cita.observaciones || 'Sin observaciones'
-              td(style='padding: 12px 15px;')
+              td.acciones(style='padding: 12px 15px; text-align: center;')
                 if cita.estado === 'pendiente'
                   a(
                     href=`/citas/atender/${cita.id}`,
                     title='Atender',
-                    style='margin-right: 12px; text-decoration: none; font-size: 18px; color: #28a745;'
+                    style='display: inline-block; margin-right: 8px; text-decoration: none; font-size: 16px; color: #28a745;'
                   ) 🩺
                   a(
                     href=`/citas/cancelar/${cita.id}`,
                     title='Cancelar',
-                    style='margin-right: 12px; text-decoration: none; font-size: 18px; color: #dc3545;',
+                    style='display: inline-block; margin-right: 8px; text-decoration: none; font-size: 16px; color: #dc3545;',
                     onclick="return confirm('¿Seguro que deseas cancelar esta cita?')"
                   ) 🗑️
                   a(
                     href=`/citas?search=${search || ''}&page=${currentPage || 1}&edit=${cita.id}`,
                     title='Editar',
-                    style='text-decoration: none; font-size: 18px; color: #007bff;'
+                    style='display: inline-block; margin-right: 8px;text-decoration: none; font-size: 16px; color: #007bff;'
                   ) ✏️
                 else if cita.estado === 'en consulta'
                   a(

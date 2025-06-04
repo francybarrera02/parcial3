@@ -47,17 +47,17 @@ block content
                 a(
                   href=`/historiales/${paciente.id}`,
                   title='Ver Historial',
-                  style='margin-right: 12px; color: #007bff; text-decoration: none; font-size: 18px;'
+                  style='display: inline-block;margin-right: 8px; color: #007bff; text-decoration: none; font-size: 16px;'
                 ) 📖
                 a(
                   href=`/pacientes?search=${search || ''}&page=${currentPage || 1}&edit=${paciente.id}`,
                   title='Editar',
-                  style='margin-right: 12px; color: #28a745; text-decoration: none; font-size: 18px;'
+                  style='display: inline-block; margin-right: 8px; color: #28a745; text-decoration: none; font-size: 16px;'
                 ) ✏️
                 a(
                   href=`/pacientes/eliminar-paciente/${paciente.id}`,
                   title='Eliminar',
-                  style='color: #dc3545; text-decoration: none; font-size: 18px;',
+                  style='color: #dc3545; text-decoration: none;display: inline-block; margin-right: 8px; font-size: 16px;',
                   onclick="return confirm('¿Seguro que deseas eliminar a este paciente?');"
                 ) 🗑️
 
